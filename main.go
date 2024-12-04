@@ -14,13 +14,17 @@ import (
 )
 
 var flags = struct {
-	file string
-	help bool
+	part    int
+	file    string
+	help    bool
+	verbose bool
 }{}
 
+var logger *log.Logger
+
 func init() {
-	handler := log.NewWithOptions(os.Stderr, log.Options{Level: log.InfoLevel})
-	slog.SetDefault(slog.New(handler))
+	logger = log.NewWithOptions(os.Stderr, log.Options{Level: log.InfoLevel})
+	slog.SetDefault(slog.New(logger))
 
 	pflag.Usage = func() {
 		fmt.Fprintf(os.Stderr, `Usage: go run . <day> [flags]
@@ -30,8 +34,10 @@ Flags:
 		pflag.PrintDefaults()
 	}
 
-	pflag.BoolVarP(&flags.help, "help", "h", false, "Show this help text")
+	pflag.IntVarP(&flags.part, "part", "p", 0, "Part to execute, where 0 means run both part 1 and part 2")
 	pflag.StringVarP(&flags.file, "file", "f", "", `Input file (defaults to "inputs/day%02d.txt" using the "<day>" argument)`)
+	pflag.BoolVarP(&flags.help, "help", "h", false, "Show this help text")
+	pflag.BoolVarP(&flags.verbose, "verbose", "v", false, "Show debug logs")
 }
 
 func main() {
@@ -39,6 +45,10 @@ func main() {
 	if flags.help {
 		pflag.Usage()
 		os.Exit(0)
+	}
+
+	if flags.verbose {
+		logger.SetLevel(log.DebugLevel)
 	}
 
 	if pflag.NArg() != 1 {
@@ -73,7 +83,7 @@ func main() {
 	}
 	defer file.Close()
 
-	slog.Debug("Executing AoC solution", "day", dayNum, "file", flags.file)
+	slog.Debug("Opened file", "file", flags.file)
 
 	runPart(day, dayNum, 1, file)
 
@@ -86,6 +96,10 @@ func main() {
 }
 
 func runPart(day solutions.Day, dayNum, part int, file io.Reader) {
+	if flags.part != 0 && flags.part != part {
+		slog.Debug("Skipping part because of the --part flag")
+		return
+	}
 	var solution any
 	var err error
 	switch part {

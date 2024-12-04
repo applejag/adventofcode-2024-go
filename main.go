@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"strconv"
@@ -17,7 +19,7 @@ var flags = struct {
 }{}
 
 func init() {
-	handler := log.NewWithOptions(os.Stderr, log.Options{Level: log.DebugLevel})
+	handler := log.NewWithOptions(os.Stderr, log.Options{Level: log.InfoLevel})
 	slog.SetDefault(slog.New(handler))
 
 	pflag.Usage = func() {
@@ -45,14 +47,23 @@ func main() {
 		os.Exit(1)
 	}
 
-	day, err := strconv.Atoi(pflag.Arg(0))
+	dayNum, err := strconv.Atoi(pflag.Arg(0))
 	if err != nil {
 		slog.Error("Failed to parse argument", "error", err)
 		os.Exit(1)
 	}
 
+	var day solutions.Day
+	switch dayNum {
+	case 3:
+		day = solutions.Day03{}
+	default:
+		slog.Error("Invalid day", "day", dayNum)
+		os.Exit(1)
+	}
+
 	if flags.file == "" {
-		flags.file = fmt.Sprintf("inputs/day%02d.txt", day)
+		flags.file = fmt.Sprintf("inputs/day%02d.txt", dayNum)
 	}
 
 	file, err := os.Open(flags.file)
@@ -62,23 +73,37 @@ func main() {
 	}
 	defer file.Close()
 
-	slog.Debug("Executing AoC solution", "day", day, "file", flags.file)
+	slog.Debug("Executing AoC solution", "day", dayNum, "file", flags.file)
 
+	runPart(day, dayNum, 1, file)
+
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		slog.Error("Failed to seek file", "error", err)
+		os.Exit(1)
+	}
+
+	runPart(day, dayNum, 2, file)
+}
+
+func runPart(day solutions.Day, dayNum, part int, file io.Reader) {
 	var solution any
-	var solutionErr error
-
-	switch day {
-	case 3:
-		solution, solutionErr = solutions.Day03Part1(file)
+	var err error
+	switch part {
+	case 1:
+		solution, err = day.Part1(file)
 	default:
-		slog.Error("Invalid day", "day", solutionErr)
+		solution, err = day.Part2(file)
+	}
+
+	if err == errors.ErrUnsupported {
+		slog.Warn("Part has not been implemented", "day", dayNum, "part", part)
+		return
+	}
+
+	if err != nil {
+		slog.Error("Failed to calculate solution", "day", dayNum, "part", part, "error", err)
 		os.Exit(1)
 	}
 
-	if solutionErr != nil {
-		slog.Error("Failed to calculate solution", "day", day, "error", solutionErr)
-		os.Exit(1)
-	}
-
-	slog.Info("", "day", day, "part", 1, "solution", fmt.Sprintf("%v\n", solution))
+	slog.Info("", "day", dayNum, "part", part, "solution", fmt.Sprintf("%v\n", solution))
 }

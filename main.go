@@ -13,15 +13,31 @@ import (
 
 var flags = struct {
 	file string
+	help bool
 }{}
 
 func init() {
 	handler := log.NewWithOptions(os.Stderr, log.Options{Level: log.DebugLevel})
 	slog.SetDefault(slog.New(handler))
+
+	pflag.Usage = func() {
+		fmt.Fprintf(os.Stderr, `Usage: go run . <day> [flags]
+
+Flags:
+`)
+		pflag.PrintDefaults()
+	}
+
+	pflag.BoolVarP(&flags.help, "help", "h", false, "Show this help text")
+	pflag.StringVarP(&flags.file, "file", "f", "", `Input file (defaults to "inputs/day%02d.txt" using the "<day>" argument)`)
 }
 
 func main() {
 	pflag.Parse()
+	if flags.help {
+		pflag.Usage()
+		os.Exit(0)
+	}
 
 	if pflag.NArg() != 1 {
 		slog.Error("Wrong number of arguments")

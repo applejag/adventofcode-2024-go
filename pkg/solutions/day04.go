@@ -156,6 +156,39 @@ func (d Day04) Part1(file io.Reader) (any, error) {
 	return count, nil
 }
 
-func (Day04) Part2(file io.Reader) (any, error) {
-	return nil, ErrNotImplemented
+func (d Day04) Part2(file io.Reader) (any, error) {
+	lines, err := d.readGrid(file)
+	if err != nil {
+		return nil, err
+	}
+	var count int
+
+	mas := [3]byte{'M', 'A', 'S'}
+	sam := [3]byte{'S', 'A', 'M'}
+
+	for y := 1; y < len(lines)-1; y++ {
+		line := lines[y]
+		for x := 1; x < len(line)-1; x++ {
+			if lines[y][x] != 'A' {
+				continue
+			}
+
+			var diag1 [3]byte
+			diag1[0] = lines[y-1][x-1]
+			diag1[1] = lines[y][x]
+			diag1[2] = lines[y+1][x+1]
+
+			var diag2 [3]byte
+			diag2[0] = lines[y-1][x+1]
+			diag2[1] = lines[y][x]
+			diag2[2] = lines[y+1][x-1]
+
+			if (diag1 == sam || diag1 == mas) &&
+				(diag2 == sam || diag2 == mas) {
+				count++
+			}
+		}
+	}
+
+	return count, nil
 }

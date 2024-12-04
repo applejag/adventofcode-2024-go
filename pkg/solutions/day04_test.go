@@ -89,3 +89,19 @@ d
 			strings.ReplaceAll(got, "\n", "\n  | "))
 	}
 }
+
+func TestDay04Part2(t *testing.T) {
+	setLogger(t)
+	input := `
+MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX`
+	AssertPart2(t, Day04{}, 9, input)
+}

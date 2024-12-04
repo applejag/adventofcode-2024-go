@@ -64,10 +64,8 @@ func main() {
 	}
 
 	var day solutions.Day
-	switch dayNum {
-	case 3:
-		day = solutions.Day03{}
-	default:
+	day, ok := solutions.Days[dayNum]
+	if !ok {
 		slog.Error("Invalid day", "day", dayNum)
 		os.Exit(1)
 	}

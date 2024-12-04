@@ -14,6 +14,8 @@ Usage: go run . <day> [flags]
 Flags:
   -f, --file string   Input file (defaults to "inputs/day%02d.txt" using the "<day>" argument)
   -h, --help          Show this help text
+  -p, --part int      Part to execute, where 0 means run both part 1 and part 2
+  -v, --verbose       Show debug logs
 ```
 
 ```console

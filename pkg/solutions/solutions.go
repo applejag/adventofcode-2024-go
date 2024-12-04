@@ -1,6 +1,11 @@
 package solutions
 
-import "io"
+import (
+	"errors"
+	"io"
+)
+
+var ErrNotImplemented = errors.New("not implemented")
 
 var Days = map[int]Day{
 	1: Day01{},

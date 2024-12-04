@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -107,7 +106,7 @@ func runPart(day solutions.Day, dayNum, part int, file io.Reader) {
 		solution, err = day.Part2(file)
 	}
 
-	if err == errors.ErrUnsupported {
+	if err == solutions.ErrNotImplemented {
 		slog.Warn("Part has not been implemented", "day", dayNum, "part", part)
 		return
 	}

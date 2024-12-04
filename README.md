@@ -18,8 +18,11 @@ Flags:
 
 ```console
 $ go run . 3
-DEBU Executing AoC solution day=3 file=inputs/day03.txt
 INFO day=3 part=1
   solution=
   │ 170778545
+
+INFO day=3 part=2
+  solution=
+  │ 82868252
 ```

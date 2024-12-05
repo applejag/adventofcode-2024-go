@@ -1,14 +1,15 @@
-package solutions
+package testutil
 
 import (
 	"log/slog"
 	"strings"
 	"testing"
 
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions"
 	"github.com/charmbracelet/log"
 )
 
-func AssertPart1(t *testing.T, day Day, want any, input string) {
+func AssertPart1(t *testing.T, day solutions.Day, want any, input string) {
 	t.Helper()
 	got, err := day.Part1(strings.NewReader(input))
 	if err != nil {
@@ -20,7 +21,7 @@ func AssertPart1(t *testing.T, day Day, want any, input string) {
 	}
 }
 
-func AssertPart2(t *testing.T, day Day, want any, input string) {
+func AssertPart2(t *testing.T, day solutions.Day, want any, input string) {
 	t.Helper()
 	got, err := day.Part2(strings.NewReader(input))
 	if err != nil {
@@ -32,7 +33,7 @@ func AssertPart2(t *testing.T, day Day, want any, input string) {
 	}
 }
 
-func setLogger(t *testing.T) {
+func SetLogger(t *testing.T) {
 	origLogger := slog.Default()
 	t.Cleanup(func() {
 		slog.SetDefault(origLogger)

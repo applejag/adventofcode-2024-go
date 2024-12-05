@@ -1,14 +1,18 @@
-package solutions
+package day04
 
 import (
 	"bytes"
 	"io"
 	"slices"
+
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions"
 )
 
-type Day04 struct{}
+type Day struct{}
 
-func (Day04) readGrid(file io.Reader) ([][]byte, error) {
+var _ solutions.Day = Day{}
+
+func (Day) readGrid(file io.Reader) ([][]byte, error) {
 	b, err := io.ReadAll(file)
 	if err != nil {
 		return nil, err
@@ -17,7 +21,7 @@ func (Day04) readGrid(file io.Reader) ([][]byte, error) {
 	return lines, nil
 }
 
-func (Day04) columns(lines [][]byte) [][]byte {
+func (Day) columns(lines [][]byte) [][]byte {
 	columns := make([][]byte, len(lines[0]))
 	for i := range columns {
 		columns[i] = make([]byte, len(lines))
@@ -30,7 +34,7 @@ func (Day04) columns(lines [][]byte) [][]byte {
 	return columns
 }
 
-func (Day04) diagonals(lines [][]byte) [][]byte {
+func (Day) diagonals(lines [][]byte) [][]byte {
 	/*
 
 		  0 1 2 3 4 x
@@ -101,14 +105,14 @@ func (Day04) diagonals(lines [][]byte) [][]byte {
 	return diagonals
 }
 
-func (d Day04) invertedDiagonals(lines [][]byte) [][]byte {
+func (d Day) invertedDiagonals(lines [][]byte) [][]byte {
 	reversedLines := make([][]byte, len(lines))
 	copy(reversedLines, lines)
 	slices.Reverse(reversedLines)
 	return d.diagonals(reversedLines)
 }
 
-func (d Day04) Part1(file io.Reader) (any, error) {
+func (d Day) Part1(file io.Reader) (any, error) {
 	lines, err := d.readGrid(file)
 	if err != nil {
 		return nil, err
@@ -156,7 +160,7 @@ func (d Day04) Part1(file io.Reader) (any, error) {
 	return count, nil
 }
 
-func (d Day04) Part2(file io.Reader) (any, error) {
+func (d Day) Part2(file io.Reader) (any, error) {
 	lines, err := d.readGrid(file)
 	if err != nil {
 		return nil, err

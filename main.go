@@ -8,9 +8,20 @@ import (
 	"strconv"
 
 	"github.com/applejag/adventofcode-2024-go/pkg/solutions"
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day01"
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day02"
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day03"
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day04"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/pflag"
 )
+
+var days = map[int]solutions.Day{
+	1: day01.Day{},
+	2: day02.Day{},
+	3: day03.Day{},
+	4: day04.Day{},
+}
 
 var flags = struct {
 	part    int
@@ -63,7 +74,7 @@ func main() {
 	}
 
 	var day solutions.Day
-	day, ok := solutions.Days[dayNum]
+	day, ok := days[dayNum]
 	if !ok {
 		slog.Error("Invalid day", "day", dayNum)
 		os.Exit(1)

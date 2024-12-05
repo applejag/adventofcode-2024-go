@@ -1,13 +1,15 @@
-package solutions
+package day04
 
 import (
 	"bytes"
 	"strings"
 	"testing"
+
+	"github.com/applejag/adventofcode-2024-go/pkg/testutil"
 )
 
 func TestDay04Part1(t *testing.T) {
-	setLogger(t)
+	testutil.SetLogger(t)
 	input := `
 MMMSXXMASM
 MSAMXMSMSA
@@ -19,12 +21,12 @@ SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX`
-	AssertPart1(t, Day04{}, 18, input)
+	testutil.AssertPart1(t, Day{}, 18, input)
 }
 
 func TestDay04Columns(t *testing.T) {
-	setLogger(t)
-	diagonals := Day04{}.columns(bytes.Split(bytes.TrimSpace([]byte(`
+	testutil.SetLogger(t)
+	diagonals := Day{}.columns(bytes.Split(bytes.TrimSpace([]byte(`
 abcd
 efgh
 ijkl
@@ -44,8 +46,8 @@ dhl
 }
 
 func TestDay04Diagonals(t *testing.T) {
-	setLogger(t)
-	diagonals := Day04{}.diagonals(bytes.Split(bytes.TrimSpace([]byte(`
+	testutil.SetLogger(t)
+	diagonals := Day{}.diagonals(bytes.Split(bytes.TrimSpace([]byte(`
 abcd
 efgh
 ijkl
@@ -67,13 +69,13 @@ l
 }
 
 func TestDay04DiagonalsInverted(t *testing.T) {
-	setLogger(t)
+	testutil.SetLogger(t)
 	lines := bytes.Split(bytes.TrimSpace([]byte(`
 abcd
 efgh
 ijkl
 `)), []byte{'\n'})
-	diagonals := Day04{}.invertedDiagonals(lines)
+	diagonals := Day{}.invertedDiagonals(lines)
 	want := strings.TrimSpace(`
 i
 ej
@@ -91,7 +93,7 @@ d
 }
 
 func TestDay04Part2(t *testing.T) {
-	setLogger(t)
+	testutil.SetLogger(t)
 	input := `
 MMMSXXMASM
 MSAMXMSMSA
@@ -103,5 +105,5 @@ SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX`
-	AssertPart2(t, Day04{}, 9, input)
+	testutil.AssertPart2(t, Day{}, 9, input)
 }

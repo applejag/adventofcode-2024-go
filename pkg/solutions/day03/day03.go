@@ -1,4 +1,4 @@
-package solutions
+package day03
 
 import (
 	"bufio"
@@ -7,13 +7,17 @@ import (
 	"log/slog"
 	"regexp"
 	"strconv"
+
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions"
 )
 
 var day03Regex = regexp.MustCompile(`mul\((\d+),(\d+)\)`)
 
-type Day03 struct{}
+type Day struct{}
 
-func (Day03) Part1(file io.Reader) (any, error) {
+var _ solutions.Day = Day{}
+
+func (Day) Part1(file io.Reader) (any, error) {
 	scanner := bufio.NewScanner(file)
 	var sum int
 	for scanner.Scan() {
@@ -38,7 +42,7 @@ func (Day03) Part1(file io.Reader) (any, error) {
 
 var day03DoDontRegex = regexp.MustCompile(`mul\((\d+),(\d+)\)|do\(\)|don't\(\)`)
 
-func (Day03) Part2(file io.Reader) (any, error) {
+func (Day) Part2(file io.Reader) (any, error) {
 	scanner := bufio.NewScanner(file)
 	var sum int
 	enabled := true

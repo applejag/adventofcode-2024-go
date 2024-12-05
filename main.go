@@ -17,10 +17,31 @@ import (
 )
 
 var days = map[int]solutions.Day{
-	1: day01.Day{},
-	2: day02.Day{},
-	3: day03.Day{},
-	4: day04.Day{},
+	1:  day01.Day{},
+	2:  day02.Day{},
+	3:  day03.Day{},
+	4:  day04.Day{},
+	5:  solutions.UnimplementedDay{},
+	6:  solutions.UnimplementedDay{},
+	7:  solutions.UnimplementedDay{},
+	8:  solutions.UnimplementedDay{},
+	9:  solutions.UnimplementedDay{},
+	10: solutions.UnimplementedDay{},
+	11: solutions.UnimplementedDay{},
+	12: solutions.UnimplementedDay{},
+	13: solutions.UnimplementedDay{},
+	14: solutions.UnimplementedDay{},
+	15: solutions.UnimplementedDay{},
+	16: solutions.UnimplementedDay{},
+	17: solutions.UnimplementedDay{},
+	18: solutions.UnimplementedDay{},
+	19: solutions.UnimplementedDay{},
+	20: solutions.UnimplementedDay{},
+	21: solutions.UnimplementedDay{},
+	22: solutions.UnimplementedDay{},
+	23: solutions.UnimplementedDay{},
+	24: solutions.UnimplementedDay{},
+	25: solutions.UnimplementedDay{},
 }
 
 var flags = struct {

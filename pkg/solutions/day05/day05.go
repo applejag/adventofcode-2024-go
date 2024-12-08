@@ -32,7 +32,20 @@ func (Day) Part1(file io.Reader) (any, error) {
 }
 
 func (Day) Part2(file io.Reader) (any, error) {
-	return nil, solutions.ErrNotImplemented
+	rules, updates, err := parseInput(file)
+	if err != nil {
+		return nil, err
+	}
+
+	var sum int
+	for _, update := range updates {
+		if !ValidateRules(rules, update) {
+			fixed := FixUpdate(rules, update)
+			sum += fixed.Middle()
+		}
+	}
+
+	return sum, nil
 }
 
 type OrderingRule struct {
@@ -41,12 +54,30 @@ type OrderingRule struct {
 }
 
 func ValidateRules(rules []OrderingRule, update Update) bool {
-	for _, rule := range rules {
+	return FindInvalidRule(rules, update) == nil
+}
+
+func FindInvalidRule(rules []OrderingRule, update Update) *OrderingRule {
+	for i, rule := range rules {
 		if !rule.Validate(update) {
-			return false
+			return &rules[i]
 		}
 	}
-	return true
+	return nil
+}
+
+func FixUpdate(rules []OrderingRule, update Update) Update {
+	update = slices.Clone(update)
+	for range 100 {
+		rule := FindInvalidRule(rules, update)
+		if rule == nil {
+			return update
+		}
+		idxBefore := slices.Index(update, rule.Before)
+		idxAfter := slices.Index(update, rule.After)
+		update[idxBefore], update[idxAfter] = update[idxAfter], update[idxBefore]
+	}
+	panic(fmt.Errorf("failed to fix update after 100 attempts"))
 }
 
 func (rule OrderingRule) Validate(update Update) bool {

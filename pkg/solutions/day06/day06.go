@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/applejag/adventofcode-2024-go/pkg/solutions"
 	"gopkg.in/typ.v4/arrays"
@@ -32,7 +33,27 @@ func (Day) Part1(file io.Reader) (any, error) {
 }
 
 func (Day) Part2(file io.Reader) (any, error) {
-	return nil, solutions.ErrNotImplemented
+	m, err := ParseMap(file)
+	if err != nil {
+		return nil, err
+	}
+
+	var loopCount int
+	for x := range m.Grid.Width() {
+		for y := range m.Grid.Height() {
+			if m.Grid.Get(x, y) != '.' {
+				continue
+			}
+			clone := m.Clone()
+			clone.Grid.Set(x, y, '#')
+			if err := clone.GuardMove(); errors.Is(err, ErrMoveLoop) {
+				slog.Debug("Loop", "x", x, "y", y)
+				loopCount++
+			}
+		}
+	}
+
+	return loopCount, nil
 }
 
 type Vec2 struct {
@@ -43,7 +64,7 @@ type Vec2 struct {
 type Facing byte
 
 const (
-	FacingUp Facing = iota
+	FacingUp Facing = 1 << iota
 	FacingDown
 	FacingLeft
 	FacingRight
@@ -70,18 +91,27 @@ type Guard struct {
 }
 
 type Map struct {
-	Grid  arrays.Array2D[byte]
-	Guard Guard
+	Grid         arrays.Array2D[byte]
+	Guard        Guard
+	GuardHistory arrays.Array2D[Facing]
+}
+
+func (m Map) Clone() Map {
+	clone := m
+	clone.Grid = clone.Grid.Clone()
+	clone.GuardHistory = clone.GuardHistory.Clone()
+	return clone
 }
 
 var (
 	ErrMoveOutOfBounds = errors.New("move out of bounds")
 	ErrMoveObstructed  = errors.New("move obstructed")
 	ErrMoveStepsLimit  = errors.New("move steps limit")
+	ErrMoveLoop        = errors.New("move loop")
 )
 
 func (m *Map) GuardMove() error {
-	for range 100000 {
+	for range 10000 {
 		err := m.guardTryMoveOnce()
 		if errors.Is(err, ErrMoveObstructed) {
 			m.guardTurn()
@@ -106,6 +136,13 @@ func (m *Map) guardTryMoveOnce() error {
 	if char == '#' {
 		return ErrMoveObstructed
 	}
+	pastFacing := m.GuardHistory.Get(newPos.X, newPos.Y)
+
+	if pastFacing&m.Guard.Facing != 0 {
+		return ErrMoveLoop
+	}
+
+	m.GuardHistory.Set(newPos.X, newPos.Y, pastFacing|m.Guard.Facing)
 	m.Grid.Set(newPos.X, newPos.Y, 'X')
 	m.Guard.Pos = newPos
 	return nil
@@ -145,13 +182,15 @@ func ParseMap(file io.Reader) (Map, error) {
 				grid.Set(x, y, '#')
 			case '^':
 				guard.Pos = Vec2{x, y}
+				guard.Facing = FacingUp
 				grid.Set(x, y, 'X')
 			}
 		}
 	}
 
 	return Map{
-		Grid:  grid,
-		Guard: guard,
+		Grid:         grid,
+		Guard:        guard,
+		GuardHistory: arrays.New2DFilled(width, height, Facing(0)),
 	}, nil
 }

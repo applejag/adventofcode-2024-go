@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -15,8 +16,19 @@ type Day struct{}
 var _ solutions.Day = Day{}
 
 func (Day) Part1(file io.Reader) (any, error) {
+	rules, updates, err := parseInput(file)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, solutions.ErrNotImplemented
+	var sum int
+	for _, update := range updates {
+		if ValidateRules(rules, update) {
+			sum += update.Middle()
+		}
+	}
+
+	return sum, nil
 }
 
 func (Day) Part2(file io.Reader) (any, error) {
@@ -28,7 +40,38 @@ type OrderingRule struct {
 	After  int
 }
 
+func ValidateRules(rules []OrderingRule, update Update) bool {
+	for _, rule := range rules {
+		if !rule.Validate(update) {
+			return false
+		}
+	}
+	return true
+}
+
+func (rule OrderingRule) Validate(update Update) bool {
+	for i, n := range update {
+		if rule.Before == n {
+			prevNumbers := update[:i]
+			if slices.Contains(prevNumbers, rule.After) {
+				return false
+			}
+		}
+		if rule.After == n {
+			nextNumbers := update[i+1:]
+			if slices.Contains(nextNumbers, rule.Before) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 type Update []int
+
+func (u Update) Middle() int {
+	return u[len(u)/2]
+}
 
 func parseInput(file io.Reader) ([]OrderingRule, []Update, error) {
 	scanner := bufio.NewScanner(file)

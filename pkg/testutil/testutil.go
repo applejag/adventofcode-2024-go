@@ -11,7 +11,7 @@ import (
 
 func AssertPart1(t *testing.T, day solutions.Day, want any, input string) {
 	t.Helper()
-	got, err := day.Part1(strings.NewReader(input))
+	got, err := day.Part1(strings.NewReader(strings.TrimSpace(input)))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func AssertPart1(t *testing.T, day solutions.Day, want any, input string) {
 
 func AssertPart2(t *testing.T, day solutions.Day, want any, input string) {
 	t.Helper()
-	got, err := day.Part2(strings.NewReader(input))
+	got, err := day.Part2(strings.NewReader(strings.TrimSpace(input)))
 	if err != nil {
 		t.Fatal(err)
 	}

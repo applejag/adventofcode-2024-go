@@ -52,7 +52,46 @@ func (Day) Part1(file io.Reader) (any, error) {
 }
 
 func (Day) Part2(file io.Reader) (any, error) {
-	return nil, solutions.ErrNotImplemented
+	m, err := Parse(file)
+	if err != nil {
+		return nil, err
+	}
+
+	var count int
+	for _, positions := range m.AntennaPositions {
+		for i, pos := range positions {
+			if m.Grid.Get(pos.X, pos.Y) != NodeAnti {
+				m.Grid.Set(pos.X, pos.Y, NodeAnti)
+				count++
+			}
+
+			for _, other := range positions[i+1:] {
+
+				delta := other.Sub(pos)
+				if delta == (Vec2{0, 0}) {
+					panic("oh no zero delta")
+				}
+
+				for anti1 := pos.Sub(delta); m.ContainsPoint(anti1); anti1 = anti1.Sub(delta) {
+					if m.Grid.Get(anti1.X, anti1.Y) != NodeAnti {
+						m.Grid.Set(anti1.X, anti1.Y, NodeAnti)
+						count++
+					}
+				}
+
+				for anti2 := other.Add(delta); m.ContainsPoint(anti2); anti2 = anti2.Add(delta) {
+					if m.Grid.Get(anti2.X, anti2.Y) != NodeAnti {
+						m.Grid.Set(anti2.X, anti2.Y, NodeAnti)
+						count++
+					}
+				}
+			}
+		}
+	}
+
+	slog.Debug("", "map", m.String())
+
+	return count, nil
 }
 
 type Node byte

@@ -17,6 +17,7 @@ import (
 	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day07"
 	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day08"
 	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day09"
+	"github.com/applejag/adventofcode-2024-go/pkg/solutions/day10"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/pflag"
 )
@@ -31,7 +32,7 @@ var days = map[int]solutions.Day{
 	7:  day07.Day{},
 	8:  day08.Day{},
 	9:  day09.Day{},
-	10: solutions.UnimplementedDay{},
+	10: day10.Day{},
 	11: solutions.UnimplementedDay{},
 	12: solutions.UnimplementedDay{},
 	13: solutions.UnimplementedDay{},

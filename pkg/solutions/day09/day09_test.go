@@ -12,6 +12,10 @@ func TestPart1(t *testing.T) {
 	testutil.AssertPart1(t, Day{}, 1928, `2333133121414131402`)
 }
 
+func TestPart2(t *testing.T) {
+	testutil.AssertPart2(t, Day{}, 2858, `2333133121414131402`)
+}
+
 func TestParse(t *testing.T) {
 	got, err := ParseDigits(strings.NewReader("23331"))
 	if err != nil {
